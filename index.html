@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>40 Năm – Dấu ấn và Tự hào THPT Nguyễn Du</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Cấu hình Tailwind cho font Inter */
+        html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .bg-pattern {
+            /* Hình nền đậm chất truyền thống và uy nghiêm */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), url('https://placehold.co/1920x800/1e3a8a/ffffff?text=Hinh+Nen+Truong+Nguyen+Du');
+            background-size: cover;
+            background-position: center;
+        }
+        /* CSS cho Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1e3a8a; /* Indigo Dark */
+            z-index: 1000;
+            /* Đảm bảo căn giữa tuyệt đối */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+        .text-fade-in {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            animation-delay: 0.5s;
+            text-align: center; /* Đảm bảo text căn giữa */
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Hiệu ứng chung: Fade-in khi scroll vào view */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hiệu ứng cho timeline: Animate từng event */
+        .timeline-event {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .timeline-event.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .right-timeline .timeline-event {
+            transform: translateX(20px);
+        }
+
+        /* Hiệu ứng cho grid items: Subtle scale on hover */
+        .grid-item-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .grid-item-hover:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Hiệu ứng cho cards: Fade-in stagger */
+        .card-stagger {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .card-stagger.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hiệu ứng parallax nhẹ cho hero background */
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* Hiệu ứng cho form: Subtle focus glow */
+        input:focus, textarea:focus {
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* Indigo glow */
+        }
+
+        /* Thêm hiệu ứng đẹp mới: Glow cho tiêu đề */
+        .glow-title {
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5), 0 0 20px rgba(251, 191, 36, 0.3);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { text-shadow: 0 0 5px rgba(251, 191, 36, 0.3); }
+            50% { text-shadow: 0 0 15px rgba(251, 191, 36, 0.7); }
+        }
+
+        /* Hiệu ứng wave cho background sections */
+        .wave-bg {
+            position: relative;
+            overflow: hidden;
+        }
+        .wave-bg::before {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: radial-gradient(circle, transparent 20%, #f3f4f6 20%, #f3f4f6 80%, transparent 80%) 0 0 / 10% 100% repeat-x;
+            animation: waveAnimation 3s linear infinite;
+        }
+        @keyframes waveAnimation {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-10%); }
+        }
+
+        /* Hiệu ứng rotate nhẹ cho ảnh profile trên hover */
+        .profile-img {
+            transition: transform 0.5s ease;
+        }
+        .profile-card:hover .profile-img {
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        /* Hiệu ứng confetti nhẹ cho hero (sử dụng CSS particles) */
+        .confetti {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .confetti span {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #fbbf24;
+            animation: confettiFall 5s linear infinite;
+            opacity: 0.5;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'primary-indigo': '#4f46e5',
+                'accent-gold': '#fbbf24',
+              },
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 overflow-x-hidden">
+
+    <!-- HIỆU ỨNG MỞ ĐẦU (SPLASH SCREEN) -->
+    <div id="splash-screen">
+        <h1 class="text-4xl md:text-6xl font-black text-accent-gold text-fade-in">
+            40 NĂM – DẤU ẤN VÀ TỰ HÀO
+        </h1>
+        <p class="text-xl text-gray-200 mt-4 text-fade-in" style="animation-delay: 1s;">THPT Nguyễn Du</p>
+    </div>
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="sticky top-0 z-50 bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <!-- Logo/Tên Trường -->
+            <a href="#hero" class="flex items-center space-x-3 text-2xl font-extrabold text-primary-indigo hover:text-indigo-700 transition duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L1 7v10l11 5 11-5V7L12 2zm0 15.98l-7-3.15V9.02l7 3.15v5.81zm9-3.15l-7 3.15v-5.81l7-3.15v5.81z"/></svg>
+                <span>THPT Nguyễn Du</span>
+            </a>
+            
+            <!-- Menu Desktop -->
+            <nav class="hidden md:flex space-x-4 lg:space-x-8 text-sm">
+                <a href="#hero" class="text-primary-indigo font-bold transition duration-200">Lời Ngỏ</a>
+                <a href="#legacy" class="text-gray-600 hover:text-primary-indigo font-medium transition duration-200">Dấu Ấn Truyền Thống</a>
+                <a href="#youth" class="text-gray-600 hover:text-primary-indigo font-medium transition duration-200">Sắc Màu Tuổi Trẻ</a>
+                <a href="#innovation" class="text-gray-600 hover:text-primary-indigo font-medium transition duration-200">Sáng Tạo Công Nghệ</a>
+                <a href="#exemplary" class="text-gray-600 hover:text-primary-indigo font-medium transition duration-200">Gương Sáng</a>
+            </nav>
+
+            <!-- Menu Mobile Button -->
+            <button id="menu-button" class="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100 transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+            </button>
+        </div>
+
+        <!-- Menu Mobile (Ẩn/Hiện bằng JS) -->
+        <div id="mobile-menu" class="hidden md:hidden pb-4 transition-all duration-300 ease-in-out">
+            <nav class="flex flex-col space-y-2 px-4">
+                <a href="#hero" class="block py-2 text-primary-indigo font-bold rounded-lg">Lời Ngỏ</a>
+                <a href="#legacy" class="block py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Dấu Ấn Truyền Thống</a>
+                <a href="#youth" class="block py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Sắc Màu Tuổi Trẻ</a>
+                <a href="#innovation" class="block py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Sáng Tạo Công Nghệ</a>
+                <a href="#exemplary" class="block py-2 text-gray-600 hover:bg-gray-50 rounded-lg">Gương Sáng</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. TRANG CHỦ – LỜI NGỎ (HERO SECTION) - Thêm parallax background và fade-in, thêm confetti -->
+        <section class="bg-pattern text-white py-12 md:py-16 shadow-inner parallax-bg fade-in-section relative" id="hero">
+            <div class="confetti">
+                <span style="left: 10%; animation-delay: 0s; animation-duration: 5s;"></span>
+                <span style="left: 20%; animation-delay: 1s; animation-duration: 4s;"></span>
+                <span style="left: 30%; animation-delay: 2s; animation-duration: 6s;"></span>
+                <span style="left: 40%; animation-delay: 0.5s; animation-duration: 5s;"></span>
+                <span style="left: 50%; animation-delay: 1.5s; animation-duration: 4s;"></span>
+                <span style="left: 60%; animation-delay: 2.5s; animation-duration: 6s;"></span>
+                <span style="left: 70%; animation-delay: 0s; animation-duration: 5s;"></span>
+                <span style="left: 80%; animation-delay: 1s; animation-duration: 4s;"></span>
+                <span style="left: 90%; animation-delay: 2s; animation-duration: 6s;"></span>
+            </div>
+            <div class="max-w-4xl mx-auto text-center px-4">
+                <h1 class="text-5xl md:text-7xl font-black mb-4 tracking-tight leading-tight glow-title">
+                    <span class="text-accent-gold block text-3xl mb-3 font-extrabold">40 NĂM – DẤU ẤN VÀ TỰ HÀO</span>
+                    Lời Ngỏ
+                </h1>
+                <p class="text-lg md:text-xl font-light mb-6 max-w-2xl mx-auto">
+                    Mái trường THPT Nguyễn Du: Hành trình bồi đắp tri thức (1985 - 2025)
+                </p>
+                
+                <!-- Khu vực Lời Ngỏ (Được thiết kế như Bức Thư) -->
+                <div class="bg-white p-4 md:p-8 rounded-lg text-md md:text-lg text-left shadow-xl text-gray-800 border-t-4 border-accent-gold">
+                    <h2 class="text-xl font-bold text-primary-indigo mb-3">Kính gửi Quý Thầy Cô, Cựu Học Sinh và các Thế Hệ Nguyễn Du,</h2>
+                    <p class="italic mb-3">
+                        "40 năm không chỉ là một con số, mà là một hành trình rực rỡ của biết bao thế hệ. Với tinh thần **Tự Hào** và lòng **Tri Ân**, chúng em thiết kế website này để lan tỏa ngọn lửa tri thức và nhân văn mà mái trường đã thắp lên."
+                    </p>
+                    <p class="text-primary-indigo font-semibold text-right mt-3">— Tập thể lớp 12A5-K38</p>
+                </div>
+
+                <div class="space-y-3 sm:space-y-0 sm:space-x-4 mt-6">
+                    <a href="#legacy" class="inline-block bg-accent-gold text-gray-900 font-bold py-2 px-6 rounded-full shadow-md hover:bg-yellow-400 transform hover:scale-105 transition duration-300">
+                        Khám Phá Dấu Ấn
+                    </a>
+                    <a href="#exemplary" class="inline-block border-2 border-white text-white font-bold py-2 px-6 rounded-full shadow-md hover:bg-white hover:text-gray-900 transition duration-300">
+                        Tìm hiểu Gương Sáng
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. DẤU ẤN TRUYỀN THỐNG: Lịch sử, thành tích, hình ảnh - Fade-in timeline events, thêm wave-bg -->
+        <section class="py-12 md:py-16 bg-white fade-in-section wave-bg" id="legacy">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-primary-indigo border-b-4 border-accent-gold inline-block pb-2 glow-title">Dấu Ấn Truyền Thống</h2>
+                    <p class="mt-4 text-lg text-gray-600">Lịch sử vàng son, những thành tích tự hào qua bốn thập kỷ.</p>
+                </div>
+                
+                <!-- Timeline: Lịch sử và thành tích chính -->
+                <div class="relative wrap overflow-hidden p-6 h-full">
+                    <div class="border-2-2 absolute border-opacity-20 border-accent-gold h-full border" style="left: 50%"></div>
+                    
+                    <!-- Event 1: 1985 -->
+                    <div class="mb-6 flex justify-between items-center w-full right-timeline timeline-event">
+                        <div class="order-1 w-5/12 hidden md:block"></div>
+                        <div class="z-20 flex items-center order-1 bg-primary-indigo shadow-md w-6 h-6 rounded-full">
+                            <h1 class="mx-auto font-semibold text-md text-white">1</h1>
+                        </div>
+                        <div class="order-1 bg-white md:w-5/12 w-full p-4 rounded-lg shadow-md transition duration-500 hover:shadow-xl">
+                            <h3 class="mb-2 font-bold text-gray-900 text-lg text-primary-indigo">1985: Khởi Đầu Hành Trình</h3>
+                            <p class="text-xs leading-snug text-gray-700">Chính thức thành lập, đặt nền móng cho tinh thần Nguyễn Du.</p>
+                        </div>
+                    </div>
+
+                    <!-- Event 2: 1995 -->
+                    <div class="mb-6 flex justify-between flex-row-reverse items-center w-full left-timeline timeline-event">
+                        <div class="order-1 w-5/12 hidden md:block"></div>
+                        <div class="z-20 flex items-center order-1 bg-primary-indigo shadow-md w-6 h-6 rounded-full">
+                            <h1 class="mx-auto font-semibold text-md text-white">2</h1>
+                        </div>
+                        <div class="order-1 bg-white md:w-5/12 w-full p-4 rounded-lg shadow-md transition duration-500 hover:shadow-xl">
+                            <h3 class="mb-2 font-bold text-gray-900 text-lg text-primary-indigo">1995:-------</h3>
+                            <p class="text-xs leading-snug text-gray-700">----------------------------</p>
+                        </div>
+                    </div>
+
+                    <!-- Event 3: 2005 -->
+                    <div class="mb-6 flex justify-between items-center w-full right-timeline timeline-event">
+                        <div class="order-1 w-5/12 hidden md:block"></div>
+                        <div class="z-20 flex items-center order-1 bg-primary-indigo shadow-md w-6 h-6 rounded-full">
+                            <h1 class="mx-auto font-semibold text-md text-white">3</h1>
+                        </div>
+                        <div class="order-1 bg-white md:w-5/12 w-full p-4 rounded-lg shadow-md transition duration-500 hover:shadow-xl">
+                            <h3 class="mb-2 font-bold text-gray-900 text-lg text-primary-indigo">2005: -------</h3>
+                            <p class="text-xs leading-snug text-gray-700">----------------------------</p>
+                        </div>
+                    </div>
+
+                    <!-- Event 4: 2020 -->
+                    <div class="mb-6 flex justify-between flex-row-reverse items-center w-full left-timeline timeline-event">
+                        <div class="order-1 w-5/12 hidden md:block"></div>
+                        <div class="z-20 flex items-center order-1 bg-primary-indigo shadow-md w-6 h-6 rounded-full">
+                            <h1 class="mx-auto font-semibold text-md text-white">4</h1>
+                        </div>
+                        <div class="order-1 bg-white md:w-5/12 w-full p-4 rounded-lg shadow-md transition duration-500 hover:shadow-xl">
+                            <h3 class="mb-2 font-bold text-gray-900 text-lg text-primary-indigo">2020: ------------</h3>
+                            <p class="text-xs leading-snug text-gray-700">----------</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thư Viện Dấu Ấn (Hình ảnh 40 năm) - Thêm hover scale -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-extrabold text-gray-900 glow-title">Thư Viện Ảnh Dấu Ấn</h3>
+                        <p class="mt-2 text-md text-gray-600">Cùng nhau xem lại những khoảnh khắc đẹp qua 40 năm.</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4">
+                        <!-- Ảnh Placeholder 1 -->
+                        <div class="overflow-hidden rounded-lg shadow-md grid-item-hover">
+                            <img src="https://placehold.co/600x400/818cf8/ffffff?text=Lop+Hoc+Xua" alt="Ảnh kỷ niệm lớp học cũ" class="w-full h-40 md:h-48 object-cover">
+                        </div>
+                        <!-- Ảnh Placeholder 2 -->
+                        <div class="overflow-hidden rounded-lg shadow-md grid-item-hover">
+                            <img src="https://placehold.co/600x400/374151/ffffff?text=San+Truong+Hien+Tai" alt="Ảnh sân trường hiện tại" class="w-full h-40 md:h-48 object-cover">
+                        </div>
+                        <!-- Ảnh Placeholder 3 (Thêm) -->
+                        <div class="overflow-hidden rounded-lg shadow-md grid-item-hover">
+                            <img src="https://placehold.co/600x400/9ca3af/ffffff?text=Le+Truong+Thanh+Lap" alt="Ảnh lễ thành lập trường" class="w-full h-40 md:h-48 object-cover">
+                        </div>
+                        <!-- Ảnh Placeholder 4 (Thêm) -->
+                        <div class="overflow-hidden rounded-lg shadow-md grid-item-hover">
+                            <img src="https://placehold.co/600x400/6366f1/ffffff?text=Hoc+Sinh+Gioi" alt="Ảnh học sinh giỏi" class="w-full h-40 md:h-48 object-cover">
+                        </div>
+                        <!-- Ảnh Placeholder 5 (Thêm) -->
+                        <div class="overflow-hidden rounded-lg shadow-md grid-item-hover">
+                            <img src="https://placehold.co/600x400/818cf8/ffffff?text=Hoat+Dong+The+Thao" alt="Ảnh hoạt động thể thao" class="w-full h-40 md:h-48 object-cover">
+                        </div>
+                        <!-- Ảnh Placeholder 6 (Thêm) -->
+                        <div class="overflow-hidden rounded-lg shadow-md grid-item-hover">
+                            <img src="https://placehold.co/600x400/374151/ffffff?text=Van+Nghe+Truong" alt="Ảnh văn nghệ trường" class="w-full h-40 md:h-48 object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SẮC MÀU TUỔI TRẺ: Hoạt động Đoàn – Hội – Lớp, văn nghệ, thể thao, thiện nguyện - Stagger fade-in for cards, thêm wave-bg -->
+        <section class="py-12 md:py-16 bg-primary-indigo fade-in-section wave-bg" id="youth">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold border-b-4 border-accent-gold inline-block pb-2 glow-title">Sắc Màu Tuổi Trẻ</h2>
+                    <p class="mt-3 text-lg font-light">Nơi lưu giữ những khoảnh khắc sôi nổi, nhiệt huyết của tuổi học trò.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                    <!-- Card 1: Hoạt động Đoàn - Hội -->
+                    <div class="p-4 rounded-lg shadow-md border-t-4 border-accent-gold bg-white/10 backdrop-blur-sm transition duration-300 hover:scale-[1.03] card-stagger" style="transition-delay: 0s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-5a2 2 0 012-2H2a2 2 0 012 2v5h5M12 2a4 4 0 00-4 4v2a4 4 0 004 4h0a4 4 0 004-4V6a4 4 0 00-4-4z" /></svg>
+                        <h4 class="text-lg font-bold mb-2">Hoạt Động Đoàn – Hội</h4>
+                        <p class="text-xs text-gray-200">Các chương trình tình nguyện và phát triển kỹ năng lãnh đạo.</p>
+                    </div>
+                    <!-- Card 2: Văn Nghệ -->
+                    <div class="p-4 rounded-lg shadow-md border-t-4 border-accent-gold bg-white/10 backdrop-blur-sm transition duration-300 hover:scale-[1.03] card-stagger" style="transition-delay: 0.1s;">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-gold mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13h-12zM3 17h12M3 21h12M3 13h12" /></svg>
+                        <h4 class="text-lg font-bold mb-2">Văn Nghệ & Sân Khấu</h4>
+                        <p class="text-xs text-gray-200">Các cuộc thi tài năng và biểu diễn ca múa nhạc.</p>
+                    </div>
+                </div>
+
+                <!-- Thư Viện Ảnh Sắc Màu Tuổi Trẻ - Hover scale -->
+                <div class="text-center mt-12 mb-6">
+                    <h3 class="text-2xl font-extrabold text-white border-b-2 border-accent-gold inline-block pb-1 glow-title">Khoảnh Khắc Tuổi Trẻ</h3>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 md:gap-4">
+                    <!-- Ảnh 1: Hoạt động Đoàn - Hội (Placeholder trắng) -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white/20 hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Đoàn-Hội" alt="Ảnh hoạt động Đoàn Hội" class="w-full h-40 md:h-48 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center bg-white/10">
+                            <p class="text-xs font-semibold text-accent-gold">Hội Trại Thanh Niên</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 2: Văn Nghệ (Placeholder trắng) -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white/20 hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Văn+Nghệ" alt="Ảnh Văn Nghệ" class="w-full h-40 md:h-48 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center bg-white/10">
+                            <p class="text-xs font-semibold text-accent-gold">Chương Trình Chào Mừng 20/11</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 3 (Thêm): Thể Thao -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white/20 hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Thể+Thao" alt="Ảnh Thể Thao" class="w-full h-40 md:h-48 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center bg-white/10">
+                            <p class="text-xs font-semibold text-accent-gold">Chung Kết Bóng Đá</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 4 (Thêm): Thiện Nguyện -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white/20 hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Thiện+Nguyện" alt="Ảnh Thiện Nguyện" class="w-full h-40 md:h-48 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center bg-white/10">
+                            <p class="text-xs font-semibold text-accent-gold">Áo Xanh Tình Nguyện</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 5 (Thêm): Hoạt Động Lớp -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white/20 hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Hoạt+Động+Lớp" alt="Ảnh Hoạt Động Lớp" class="w-full h-40 md:h-48 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center bg-white/10">
+                            <p class="text-xs font-semibold text-accent-gold">Hoạt Động Lớp Học</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 6 (Thêm): Ngày Hội Trường -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white/20 hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Ngày+Hội+Trường" alt="Ảnh Ngày Hội Trường" class="w-full h-40 md:h-48 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center bg-white/10">
+                            <p class="text-xs font-semibold text-accent-gold">Ngày Hội Trường</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. SÁNG TẠO CÔNG NGHỆ – HƯỚNG TỚI TƯƠNG LAI: Sản phẩm học tập, ý tưởng đổi mới, khát vọng - Fade-in for features, thêm wave-bg -->
+        <section class="py-12 md:py-16 bg-white fade-in-section wave-bg" id="innovation">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-primary-indigo border-b-4 border-accent-gold inline-block pb-2 glow-title">Sáng Tạo Công Nghệ – Tương Lai</h2>
+                    <p class="mt-3 text-lg text-gray-600">Những ý tưởng đột phá và khát vọng của thế hệ trẻ Nguyễn Du, hướng tới tương lai công nghệ số.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Feature Card 1: Sản phẩm học tập -->
+                    <div class="bg-gray-50 p-4 rounded-lg shadow-md border-l-4 border-primary-indigo hover:shadow-xl transition duration-300 card-stagger" style="transition-delay: 0s;">
+                        <h4 class="text-lg font-bold text-primary-indigo mb-2">Sản Phẩm Nghiên Cứu</h4>
+                        <p class="text-gray-700 text-xs">Trưng bày các đề tài Khoa học Kỹ thuật đạt giải cao, như robot tự hành hỗ trợ nông nghiệp hoặc ứng dụng AI phân tích dữ liệu học tập.</p>
+                    </div>
+                    <!-- Feature Card 2: Ý tưởng đổi mới -->
+                    <div class="bg-gray-50 p-4 rounded-lg shadow-md border-l-4 border-primary-indigo hover:shadow-xl transition duration-300 card-stagger" style="transition-delay: 0.1s;">
+                        <h4 class="text-lg font-bold text-primary-indigo mb-2">Ý Tưởng Đổi Mới</h4>
+                        <p class="text-gray-700 text-xs">Các mô hình khởi nghiệp, chẳng hạn như nền tảng học trực tuyến tích hợp VR hoặc hệ thống giám sát môi trường sử dụng IoT.</p>
+                    </div>
+                    <!-- Feature Card 3: Khát vọng (Thêm chi tiết) -->
+                    <div class="bg-gray-50 p-4 rounded-lg shadow-md border-l-4 border-primary-indigo hover:shadow-xl transition duration-300 card-stagger" style="transition-delay: 0.2s;">
+                        <h4 class="text-lg font-bold text-primary-indigo mb-2">Khát Vọng Thế Kỷ 21</h4>
+                        <p class="text-gray-700 text-xs">Video phỏng vấn học sinh về ước mơ trở thành lập trình viên, kỹ sư AI, hoặc nhà khoa học dữ liệu, góp phần xây dựng đất nước số hóa.</p>
+                    </div>
+                </div>
+
+                <!-- Thư Viện Ảnh Sáng Tạo Công Nghệ - Hover scale -->
+                <div class="text-center mt-12 mb-6">
+                    <h3 class="text-2xl font-extrabold text-gray-900 border-b-2 border-primary-indigo inline-block pb-1 glow-title">Thành Tựu Đổi Mới</h3>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+                    <!-- Ảnh 1: Sản phẩm Nghiên cứu (Placeholder trắng) -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Dự+Án+KHKT" alt="Ảnh Sản phẩm Nghiên cứu" class="w-full h-32 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center">
+                            <p class="text-xs font-semibold text-primary-indigo">Mô Hình Smart Home</p>
+                            <p class="text-xs text-gray-600 mt-1">----------</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 2: Ý tưởng đổi mới (Placeholder trắng) -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Học+Tập+Sáng+Tạo" alt="Ảnh Ý tưởng đổi mới" class="w-full h-32 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center">
+                            <p class="text-xs font-semibold text-primary-indigo">Ứng Dụng Học Tập AI</p>
+                            <p class="text-xs text-gray-600 mt-1">-------------------</p>
+                        </div>
+                    </div>
+                    <!-- Ảnh 3: Khát vọng (Placeholder trắng) - Thêm ảnh mới -->
+                    <div class="group overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition duration-300 grid-item-hover">
+                        <img src="https://placehold.co/600x400/ffffff/ffffff?text=Ảnh+Khát+Vọng" alt="Ảnh Khát vọng" class="w-full h-32 object-cover opacity-90 group-hover:opacity-100 transition duration-300">
+                        <div class="p-2 text-center">
+                            <p class="text-xs font-semibold text-primary-indigo">Ngày Hội Công Nghệ</p>
+                            <p class="text-xs text-gray-600 mt-1">----------------------------</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. GƯƠNG SÁNG – THẦY CÔ VÀ HỌC SINH TIÊU BIỂU - Stagger fade-in for profiles, thêm wave-bg và hiệu ứng profile -->
+        <section class="py-12 md:py-16 bg-gray-100 fade-in-section wave-bg" id="exemplary">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-extrabold text-primary-indigo border-b-4 border-accent-gold inline-block pb-2 glow-title">Gương Sáng Tiêu Biểu</h2>
+                    <p class="mt-3 text-lg text-gray-600">Tôn vinh những người đã cống hiến và làm rạng danh mái trường.</p>
+                </div>
+
+                <!-- Thầy Cô Tiêu Biểu -->
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center md:text-left glow-title">Thầy Cô – Những Người Lái Đò Tận Tụy</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <!-- Giáo viên 1 (Ảnh trắng) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-primary-indigo card-stagger profile-card" style="transition-delay: 0s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Thầy+Cô+A" alt="Ảnh Thầy/Cô A" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-accent-gold/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">TS. Nguyễn Văn A</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Cựu Hiệu Trưởng</p>
+                        <p class="text-xs text-gray-700">Người đặt nền móng vững chắc cho thành công học thuật.</p>
+                    </div>
+                    <!-- Giáo viên 2 (Ảnh trắng) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-primary-indigo card-stagger profile-card" style="transition-delay: 0.1s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Thầy+Cô+B" alt="Ảnh Thầy/Cô B" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-accent-gold/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Cô Trần Thị B</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Giáo viên Toán</p>
+                        <p class="text-xs text-gray-700">20 năm cống hiến, bồi dưỡng học sinh đạt giải quốc tế.</p>
+                    </div>
+                    <!-- Giáo viên 3 (Thêm mới) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-primary-indigo card-stagger profile-card" style="transition-delay: 0.2s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Thầy+Cô+C" alt="Ảnh Thầy/Cô C" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-accent-gold/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Thầy Lê Văn C</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Giáo viên Vật Lý</p>
+                        <p class="text-xs text-gray-700">--------------------</p>
+                    </div>
+                    <!-- Giáo viên 4 (Thêm mới) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-primary-indigo card-stagger profile-card" style="transition-delay: 0.3s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Thầy+Cô+D" alt="Ảnh Thầy/Cô D" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-accent-gold/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Cô Hoàng Thị D</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Giáo viên Ngữ Văn</p>
+                        <p class="text-xs text-gray-700">----------------------------</p>
+                    </div>
+                </div>
+
+                <!-- Học Sinh Tiêu Biểu -->
+                <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center md:text-left glow-title">Học Sinh – Những Mầm Non Tương Lai</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Học sinh 1 (Ảnh trắng) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-accent-gold card-stagger profile-card" style="transition-delay: 0s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Học+Sinh+X" alt="Ảnh Học Sinh X" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-primary-indigo/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Lê Minh X</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Cựu học sinh</p>
+                        <p class="text-xs text-gray-700">--------------------</p>
+                    </div>
+                    <!-- Học sinh 2 (Ảnh trắng) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-accent-gold card-stagger profile-card" style="transition-delay: 0.1s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Học+Sinh+Y" alt="Ảnh Học Sinh Y" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-primary-indigo/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Phạm Thị Y</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Học sinh hiện tại</p>
+                        <p class="text-xs text-gray-700">-------------------</p>
+                    </div>
+                    <!-- Học sinh 3 (Thêm mới) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-accent-gold card-stagger profile-card" style="transition-delay: 0.2s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Học+Sinh+Z" alt="Ảnh Học Sinh Z" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-primary-indigo/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Nguyễn Văn Z</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Cựu học sinh</p>
+                        <p class="text-xs text-gray-700">Nhà khoa học trẻ, tác giả nhiều công trình nghiên cứu.</p>
+                    </div>
+                    <!-- Học sinh 4 (Thêm mới) -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden text-center p-4 border-t-4 border-accent-gold card-stagger profile-card" style="transition-delay: 0.3s;">
+                        <img src="https://placehold.co/300x300/ffffff/ffffff?text=Ảnh+Học+Sinh+K" alt="Ảnh Học Sinh K" class="w-24 h-24 mx-auto rounded-full object-cover mb-3 ring-4 ring-primary-indigo/50 profile-img">
+                        <h4 class="text-lg font-bold text-primary-indigo">Trần Thị K</h4>
+                        <p class="text-gray-600 text-xs italic mb-2">Học sinh hiện tại</p>
+                        <p class="text-xs text-gray-700">----------67y</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-xl font-bold mb-3 text-accent-gold glow-title">Trường THPT Nguyễn Du</p>
+            <p class="text-xs mb-4">Kỷ Niệm 40 Năm Thành Lập (1985 - 2025)</p>
+            
+            <div class="flex justify-center space-x-4 mb-6 text-gray-400 text-xs">
+                <a href="#" class="hover:text-primary-indigo transition duration-300">Địa chỉ: [Địa chỉ trường]</a>
+                <a href="#" class="hover:text-primary-indigo transition duration-300">Email: [Email liên hệ]</a>
+            </div>
+
+            <p class="text-xs text-gray-500">Bản quyền &copy; 2025 THPT Nguyễn Du.</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript cho tương tác Mobile Menu và Splash Screen -->
+    <script>
+        // Logic cho Mobile Menu
+        const menuButton = document.getElementById('menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Logic cho Splash Screen
+        document.addEventListener('DOMContentLoaded', () => {
+            const splashScreen = document.getElementById('splash-screen');
+            const heroSection = document.getElementById('hero');
+
+            // Set timeout để chạy hiệu ứng 2s
+            setTimeout(() => {
+                // Bắt đầu fade out
+                splashScreen.style.opacity = '0';
+
+                // Sau fade out, ẩn và cuộn
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    heroSection.scrollIntoView({ behavior: 'smooth' });
+                }, 1000);
+            }, 2000);
+        });
+
+        // Logic cho hiệu ứng fade-in khi scroll
+        const sections = document.querySelectorAll('.fade-in-section');
+        const timelineEvents = document.querySelectorAll('.timeline-event');
+        const cardStaggers = document.querySelectorAll('.card-stagger');
+
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => sectionObserver.observe(section));
+
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 200); // Stagger timeline events
+                }
+            });
+        }, observerOptions);
+
+        timelineEvents.forEach(event => timelineObserver.observe(event));
+
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        cardStaggers.forEach(card => cardObserver.observe(card));
+    </script>
+</body>
+</html>
